@@ -60,7 +60,7 @@ $user = Auth::user();
                             <span>瀏覽人次：{{ $article->views }}</span>
                             <span>最新編輯時間：{{ $article->updated_at }}</span>
                         </p>
-                        @if (Session::get('userId') === $article->user_id)
+                        @if ($user->id === $article->user_id)
                             <div class="d-flex justify-content-around">
                                 <a href={{ '/edit/' . $article->id }} class="btn btn-outline-success">編輯文章</a>
                                 <form id="deleteForm" action="/delete/{{ $article->id }}" method="POST">

@@ -23,19 +23,13 @@ class ArticleFactory extends Factory
     public function definition(): array
     {
 
-
+        $randomUser = User::inRandomOrder()->first();
         return [
-            'title'     => $this->faker->title,
-            'name'      => function () {
-                return User::inRandomOrder()->first()->name;
-            },
-            'user_id'   => function () {
-                return User::inRandomOrder()->first()->id;
-            },
-            'content'   => $this->faker->paragraphs(3, true),
-            // 'image'     => $this->faker->image(public_path('images'), 200, 200, null, false),
-            'image'     => function () {
-
+            'title'         => $this->faker->words(5, true),
+            'name'          => $randomUser->name,
+            'user_id'       => $randomUser->id,
+            'content'       => $this->faker->paragraphs(3, true),
+            'image'         => function () {
                 $imagePath = glob(public_path('images/*'));
                 $randomImagePath = $imagePath[array_rand($imagePath)];
                 $data = file_get_contents($randomImagePath);
@@ -46,9 +40,9 @@ class ArticleFactory extends Factory
                 $src = "data:{$mimeType};base64,{$imageData}";
                 return $src;
             },
-            'views'     => $this->faker->randomNumber(),
-            'created_at' => Carbon::now()->subDays(rand(1, 30)),
-            'updated_at' => Carbon::now(),
+            'views'         => $this->faker->randomNumber(),
+            'created_at'    => Carbon::now()->subDays(rand(1, 30)),
+            'updated_at'    => Carbon::now(),
         ];
     }
 }
