@@ -3,6 +3,7 @@ use Illuminate\Support\Facades\Auth;
 
 $user = Auth::user();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -31,13 +32,14 @@ $user = Auth::user();
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                         @if ($user)
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="/create">新增文章</a>
+                                <a class="nav-link" aria-current="page" href="/create">新增文章</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="/logout">登出</a>
+                                <a class="nav-link" aria-current="page" href="/logout">登出</a>
                             </li>
+                        @else
                             <li class="nav-item">
-                                <p class="btn btn-outline-secondary mb-0 text-white ms-2">{{ auth()->user()->name }}</p>
+                                <a class="nav-link" href="/login">登入</a>
                             </li>
                         @endif
                     </ul>
@@ -48,33 +50,35 @@ $user = Auth::user();
     <section>
         <div class="container">
             @if (Session::has('message'))
-                <div class="alert alert-primary mt-5 text-center fs-3" role="alert">
+                <div class="alert alert-warning mt-5 text-center fs-3" role="alert">
                     {{ Session::get('message') }}
                 </div>
             @endif
-            <div class="col-6 m-auto mt-5 border p-4 border-info rounded">
-                <h2 class="text-center">新增文章</h2>
-                <form action="/create" method="post" enctype="multipart/form-data">
+            <div class="col-10 m-auto mt-5 border p-4 border-info rounded">
+                <form class="d-flex" role="search" action="{{ route('search') }}" >
                     @csrf
-                    @method('post')
-                    <div class="mb-3">
-                        <label for="title" class="form-label">標題</label>
-                        <input type="text" class="form-control" id="title" name="title">
-                        <input type="hidden" name="user_id" value={{ Session::get('userId') }}>
-                        <input type="hidden" name="name" value={{ Session::get('userName') }}>
-                    </div>
-                    <div class="mb-3">
-                        <label for="content" class="form-label">內文</label>
-                        <textarea class="form-control" style="resize: none; height: 300px" id="content" name="content"></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="image" class="form-label">文章照片</label>
-                        <input type="file" class="form-control" id="image" name="image">
-                    </div>
-                    <p class="text-center mb-0">
-                        <button type="submit" class="btn btn-primary w-50">建立文章</button>
-                    </p>
+                    <input class="form-control me-2" type="search" placeholder="搜尋標題" name="search">
+                    <button class="btn btn-outline-primary" style="width:100px" type="submit">搜尋文章</button>
                 </form>
+                <hr>
+
+                <h2 class="text-center">相關文章</h2>
+                @foreach ($articles as $article)
+                    <div class="card" style="col-12">
+                        <img src={{ $article->image }} class="card-img-top w-100"  alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ $article->title }} </h5>
+                            <h6 class="card-title">作者：{{ $article->name }} </h6>
+                            <p class="card-text">{{ Str::limit($article->content, 120) }}</p>
+                            <p class="d-flex justify-content-around mb-0 align-items-center">
+                                <a href={{"/article/" . $article->id}} class="btn btn-primary">繼續閱讀</a> 
+                                <span>瀏覽人次：{{$article->views}}</span>
+                                <span>最新編輯時間：{{$article->updated_at}}</span>
+                            </p>
+                            
+                        </div>
+                    </div>
+                @endforeach
             </div>
         </div>
     </section>

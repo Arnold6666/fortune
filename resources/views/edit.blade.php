@@ -3,6 +3,7 @@ use Illuminate\Support\Facades\Auth;
 
 $user = Auth::user();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -37,7 +38,8 @@ $user = Auth::user();
                                 <a class="nav-link active" aria-current="page" href="/logout">登出</a>
                             </li>
                             <li class="nav-item">
-                                <p class="btn btn-outline-secondary mb-0 text-white ms-2">{{ auth()->user()->name }}</p>
+                                <p class="btn btn-outline-secondary mb-0 text-white ms-2">{{ $user->name }}
+                                </p>
                             </li>
                         @endif
                     </ul>
@@ -54,25 +56,26 @@ $user = Auth::user();
             @endif
             <div class="col-6 m-auto mt-5 border p-4 border-info rounded">
                 <h2 class="text-center">新增文章</h2>
-                <form action="/create" method="post" enctype="multipart/form-data">
+                <form action="/update" method="POST" enctype="multipart/form-data">
                     @csrf
-                    @method('post')
+                    @method('PATCH')
                     <div class="mb-3">
                         <label for="title" class="form-label">標題</label>
-                        <input type="text" class="form-control" id="title" name="title">
-                        <input type="hidden" name="user_id" value={{ Session::get('userId') }}>
-                        <input type="hidden" name="name" value={{ Session::get('userName') }}>
+                        <input type="hidden" value={{ $article->id }} name="id">
+                        <input type="text" class="form-control" id="title" name="title"
+                            value={{ $article->title }}>
                     </div>
                     <div class="mb-3">
                         <label for="content" class="form-label">內文</label>
-                        <textarea class="form-control" style="resize: none; height: 300px" id="content" name="content"></textarea>
+                        <textarea class="form-control" style="resize: none; height: 300px" id="content" name="content">{{ $article->content }}</textarea>
                     </div>
                     <div class="mb-3">
                         <label for="image" class="form-label">文章照片</label>
+                        <img src={{ $article->image }} class="mb-2 w-100 rounded" alt="">
                         <input type="file" class="form-control" id="image" name="image">
                     </div>
                     <p class="text-center mb-0">
-                        <button type="submit" class="btn btn-primary w-50">建立文章</button>
+                        <button type="submit" class="btn btn-primary w-50">修改文章</button>
                     </p>
                 </form>
             </div>
