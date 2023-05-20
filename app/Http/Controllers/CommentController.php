@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
@@ -34,17 +35,31 @@ class CommentController extends Controller
 
         $dateTimeStr    = Carbon::now()->toDateTimeString();
 
-        $comment->user_id       = $request->user_id;
-        $comment->article_id    = $request->article_id;
-        $comment->name          = $request->name;
-        $comment->comment       = $request->comment;
-        $comment->created_at    = $dateTimeStr;
-        $comment->updated_at    = $dateTimeStr;
-
         try {
+            $validator = validator::make(
+                $request->all(),
+                ['comment' => 'required'],
+                ['comment.required' => '您沒有填寫留言內容喔~']
+            );
+
+            if ($validator->fails()) {
+                $error = $validator->errors()->first();
+
+                $message = $error;
+                session()->flash('message', $message);
+                return redirect()->back();
+            }
+
+            $comment->user_id       = $request->user_id;
+            $comment->article_id    = $request->article_id;
+            $comment->name          = $request->name;
+            $comment->comment       = $request->comment;
+            $comment->created_at    = $dateTimeStr;
+            $comment->updated_at    = $dateTimeStr;
+
             $comment->save();
 
-            session()->flash('message', '新增成功');
+            session()->flash('message', '留言成功');
             return redirect()->back();
         } catch (\Throwable $th) {
             session()->flash('message', $th->getMessage());
@@ -77,10 +92,24 @@ class CommentController extends Controller
 
         $dateTimeStr    = Carbon::now()->toDateTimeString();
 
-        $comment->comment       = $request->comment;
-        $comment->updated_at    = $dateTimeStr;
-
         try {
+            $validator = validator::make(
+                $request->all(),
+                ['comment' => 'required'],
+                ['comment.required' => '您沒有填寫留言內容喔~']
+            );
+
+            if ($validator->fails()) {
+                $error = $validator->errors()->first();
+
+                $message = $error;
+                session()->flash('message', $message);
+                return redirect()->back();
+            }
+            
+            $comment->comment       = $request->comment;
+            $comment->updated_at    = $dateTimeStr;
+
             $comment->save();
 
             session()->flash('message', '修改成功');

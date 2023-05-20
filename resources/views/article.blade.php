@@ -53,6 +53,11 @@ $user = Auth::user();
     <section>
         <div class="container">
             <div class="col-10 m-auto mt-5 border p-4 rounded">
+                @if (Session::has('message'))
+                    <div class="alert alert-warning mt-2 text-center fs-3" role="alert">
+                        {{ Session::get('message') }}
+                    </div>
+                @endif
                 <div class="card" style="col-12">
                     <img src={{ $article->image }} class="card-img-top w-100" alt="...">
                     <div class="card-body">
@@ -86,11 +91,7 @@ $user = Auth::user();
             <hr>
             <div class="col-10 m-auto mt-3">
                 <h2>留言區</h2>
-                @if (Session::has('message'))
-                    <div class="alert alert-warning mt-5 text-center fs-3" role="alert">
-                        {{ Session::get('message') }}
-                    </div>
-                @endif
+
                 <form action="/comment/store" method="POST" id="comment"
                     class="d-flex justify-content-center align-items-center">
                     @csrf

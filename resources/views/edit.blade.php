@@ -80,39 +80,16 @@ if ($article->user_id !== $user->id) {
                         <img src={{ $article->image }} class="mb-2 w-100 rounded" alt="">
                         <input type="file" class="form-control" id="image" name="image">
                     </div>
-                    <p class="form-label">文章標籤</p>
+                    <p class="form-label">文章標籤(點選選擇)</p>
+
                     @foreach ($hashtags as $hashtag)
-                        @if ($article->hashtags)
-                            @foreach ($article->hashtags as $articleHashtag)
-                                @if ($hashtag->id === $articleHashtag->id)
-                                    <div class="btn-group mb-2 me-2" role="group"
-                                        aria-label="Basic checkbox toggle button group">
-                                        <input type="checkbox" class="btn-check" id="{{ 'hashtag' . $hashtag->id }}"
-                                            autocomplete="off" name="hashtag_id[]" value="{{ $hashtag->id }}" checked>
-                                        <label class="btn btn-outline-primary"
-                                            for="{{ 'hashtag' . $hashtag->id }}">{{ $hashtag->name }}</label>
-                                    </div>
-                                @else
-                                    <div class="btn-group mb-2 me-2" role="group"
-                                        aria-label="Basic checkbox toggle button group">
-                                        <input type="checkbox" class="btn-check" id="{{ 'hashtag' . $hashtag->id }}"
-                                            autocomplete="off" name="hashtag_id[]" value="{{ $hashtag->id }}">
-                                        <label class="btn btn-outline-primary"
-                                            for="{{ 'hashtag' . $hashtag->id }}">{{ $hashtag->name }}</label>
-                                    </div>
-                                @endif
-                            @endforeach
-                        @else
-                            @foreach ($hashtags as $hashtag)
-                                <div class="btn-group mb-2 me-2" role="group"
-                                    aria-label="Basic checkbox toggle button group">
-                                    <input type="checkbox" class="btn-check" id="{{ 'hashtag' . $hashtag->id }}"
-                                        autocomplete="off" name="hashtag_id[]" value="{{ $hashtag->id }}">
-                                    <label class="btn btn-outline-primary"
-                                        for="{{ 'hashtag' . $hashtag->id }}">{{ $hashtag->name }}</label>
-                                </div>
-                            @endforeach
-                        @endif
+                        <div class="btn-group mb-2 me-2" role="group" aria-label="Basic checkbox toggle button group">
+                            <input type="checkbox" class="btn-check" id="{{ 'hashtag' . $hashtag->id }}"
+                                autocomplete="off" name="hashtag_id[]" value="{{ $hashtag->id }}"
+                                @if ($article->hashtags->contains('id', $hashtag->id)) checked @endif>
+                            <label class="btn btn-outline-primary"
+                                for="{{ 'hashtag' . $hashtag->id }}">{{ $hashtag->name }}</label>
+                        </div>
                     @endforeach
                     <p class="text-center mb-0">
                         <button type="submit" class="btn btn-primary w-50">修改文章</button>

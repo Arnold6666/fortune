@@ -72,6 +72,11 @@ $user = Auth::user();
                         <div class="card-body">
                             <h5 class="card-title">{{ $article->title }} </h5>
                             <h6 class="card-title">作者：{{ $article->name }} </h6>
+                            <p>文章標籤: <br>
+                                @foreach ($article->hashtags as $hashtag)
+                                    <button type="button" class="btn btn-secondary" disabled>{{ $hashtag->name }}</button>
+                                @endforeach
+                            </p>
                             <p class="card-text">{{ Str::limit($article->content, 120) }}</p>
                             <p class="d-flex justify-content-around mb-0 align-items-center">
                                 <a href={{"/article/" . $article->id}} class="btn btn-primary">繼續閱讀</a> 

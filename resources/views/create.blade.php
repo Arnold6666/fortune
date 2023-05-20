@@ -72,7 +72,7 @@ $user = Auth::user();
                         <input type="file" class="form-control" id="image" name="image">
                     </div>
 
-                    <p class="form-label">文章標籤</p>
+                    <p class="form-label">文章標籤(點選選擇)</p>
                     @foreach ($hashtags as $hashtag)
                         <div class="btn-group mb-2 me-2" role="group" aria-label="Basic checkbox toggle button group">
                             <input type="checkbox" class="btn-check" id="{{ 'hashtag' . $hashtag->id }}"

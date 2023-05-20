@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Models\Article_hashtag;
 use App\Models\Comment;
 use App\Models\Hashtag;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
@@ -19,7 +20,7 @@ class ArticleController extends Controller
     {
         //
 
-        $articles = Article::with('hashtags')->get();
+        $articles = Article::with('hashtags')->orderBy('updated_at', 'desc')->get();
 
         return view('index', compact('articles'));
     }
@@ -45,7 +46,38 @@ class ArticleController extends Controller
 
         $dateTimeStr    = Carbon::now()->toDateTimeString();
 
-        if (isset($request->image)) {
+        try {
+            $validator = validator::make(
+                $request->all(),
+                [
+                    'title'     => 'required',
+                    'content'   => 'required',
+                    'image'     => 'required',
+                ],
+                [
+                    'title.required'   => '請填寫標題',
+                    'content.required' => '請填寫內容',
+                    'image.required'   => '請選擇圖片',
+                ]
+            );
+            $errors = $validator->errors()->all();
+
+            $message = "";
+
+            for ($i = 0; $i < count($errors); $i++) {
+                if ($i === count($errors) - 1) {
+                    $message = $message . $errors[$i];
+                    continue;
+                }
+                $message = $message . $errors[$i] . '，';
+            }
+
+            if ($validator->fails()) {
+                session()->flash('message', $message);
+                return redirect()->back();
+            }
+
+
             $data = $request->image->get();
             $mime_type = $request->image->getMimeType();
             $imageData = base64_encode($data);
@@ -61,44 +93,22 @@ class ArticleController extends Controller
             $article->created_at     = $dateTimeStr;
             $article->updated_at     = $dateTimeStr;
 
-            try {
-                $article->save();
+            $article->save();
 
-                $articleId = $article->id;
+            $articleId = $article->id;
 
-                foreach($hashtags as $hashtag_id){
-                    $article_hashtag = new Article_hashtag;
-                    $article_hashtag->article_id = $articleId;
-                    $article_hashtag->hashtag_id = $hashtag_id;
-                    
-                    $article_hashtag->save();
-                }
+            foreach ($hashtags as $hashtag_id) {
+                $article_hashtag = new Article_hashtag;
+                $article_hashtag->article_id = $articleId;
+                $article_hashtag->hashtag_id = $hashtag_id;
 
-                session()->flash('message', '新增成功');
-                return redirect()->back();
-            } catch (\Throwable $th) {
-                session()->flash('message', $th->getMessage());
+                $article_hashtag->save();
             }
-        } else {
-            $image = null;
 
-            $article->name           = $request->name;
-            $article->user_id        = $request->user_id;
-            $article->title          = $request->title;
-            $article->content        = $request->content;
-            $article->image          = $image;
-            $article->created_at     = $dateTimeStr;
-            $article->updated_at     = $dateTimeStr;
-
-            try {
-                $article->save();
-
-                session()->flash('message', '新增成功');
-                return redirect()->back();
-            } catch (\Illuminate\Database\QueryException $e) {
-                $errorMessage = $e->getMessage();
-                session()->flash('message', $e->getMessage());
-            }
+            session()->flash('message', '新增成功');
+            return redirect()->back();
+        } catch (\Throwable $th) {
+            session()->flash('message', $th->getMessage());
         }
     }
 
@@ -142,55 +152,67 @@ class ArticleController extends Controller
 
         $dateTimeStr    = Carbon::now()->toDateTimeString();
 
-        if (isset($request->image)) {
+        try {
 
-            // 將圖片轉為base64編碼存入資料型態為blob的欄位
-            $data = $request->image->get();
-            $mime_type = $request->image->getMimeType();
-            $imageData = base64_encode($data);
-            $src = "data:{$mime_type};base64,{$imageData}";
-            $image = $src;
-            // die($image);
+            $validator = validator::make(
+                $request->all(),
+                [
+                    'title'     => 'required',
+                    'content'   => 'required',
+                ],
+                [
+                    'title.required'   => '請填寫標題',
+                    'content.required' => '請填寫內容',
+                ]
+            );
+            $errors = $validator->errors()->all();
+
+            $message = "";
+
+            for ($i = 0; $i < count($errors); $i++) {
+                if ($i === count($errors) - 1) {
+                    $message = $message . $errors[$i];
+                    continue;
+                }
+                $message = $message . $errors[$i] . '，';
+            }
+
+            if ($validator->fails()) {
+                session()->flash('message', $message);
+                return redirect()->back();
+            }
+            if ($request->image) {
+                // 將圖片轉為base64編碼存入資料型態為blob的欄位
+                $data = $request->image->get();
+                $mime_type = $request->image->getMimeType();
+                $imageData = base64_encode($data);
+                $src = "data:{$mime_type};base64,{$imageData}";
+                $image = $src;
+                // die($image);  
+                $article->image          = $image;
+            }
+
 
             $article->title          = $request->title;
             $article->content        = $request->content;
-            $article->image          = $image;
             $article->updated_at     = $dateTimeStr;
 
+            $article->save();
 
-
-            try {
-                $article->save();
-
-                foreach($hashtags as $hashtag_id){
+            if ($hashtags !== null) {
+                foreach ($hashtags as $hashtag_id) {
                     $article_hashtag = new Article_hashtag;
                     $article_hashtag->article_id = $request->id;
                     $article_hashtag->hashtag_id = $hashtag_id;
-                    
+
                     $article_hashtag->save();
                 }
-
-                session()->flash('message', '修改成功');
-                return redirect()->back();
-            } catch (\Illuminate\Database\QueryException $e) {
-                $errorMessage = $e->getMessage();
-                session()->flash('message', $e->getMessage());
             }
-        } else {
 
-            $article->title          = $request->title;
-            $article->content        = $request->content;
-            $article->updated_at     = $dateTimeStr;
-
-            try {
-                $article->save();
-
-                session()->flash('message', '修改成功');
-                return redirect()->back();
-            } catch (\Illuminate\Database\QueryException $e) {
-                $errorMessage = $e->getMessage();
-                session()->flash('message', $e->getMessage());
-            }
+            session()->flash('message', '修改成功');
+            return redirect()->to('/article/' . $request->id);
+        } catch (\Throwable $th) {
+            session()->flash('message', $th->getMessage());
         }
     }
 
@@ -214,7 +236,7 @@ class ArticleController extends Controller
     {
         $query = $request->search;
 
-        $articles = Article::where('title', 'like', '%' . $query . '%')->get();
+        $articles = Article::where('title', 'like', '%' . $query . '%')->with('hashtags')->orderBy('updated_at', 'desc')->get();
 
         return view('search', compact('articles'));
     }

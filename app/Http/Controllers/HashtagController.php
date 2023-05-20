@@ -13,6 +13,9 @@ class HashtagController extends Controller
     public function index()
     {
         //
+        $hashtags = Hashtag::get();
+
+        return view('hashtag', compact('hashtags'));
     }
 
     /**
@@ -29,6 +32,19 @@ class HashtagController extends Controller
     public function store(Request $request)
     {
         //
+        $hashtag = new Hashtag;
+
+        $hashtag->name = $request->name;
+
+        try {
+            $hashtag->save();
+
+            session()->flash('message', '新增成功');
+
+            return redirect()->back();
+        } catch (\Throwable $th) {
+            session()->flash('message', $th->getMessage());
+        }
     }
 
     /**
