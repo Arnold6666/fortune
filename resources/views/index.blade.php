@@ -78,7 +78,7 @@ $user = Auth::user();
                             {{-- 顯示文章標籤 --}}
                             <p>文章標籤: <br>
                                 @foreach ($article->hashtags as $hashtag)
-                                    <button type="button" class="btn btn-secondary" disabled>{{ $hashtag->name }}</button>
+                                    <button type="button" class="btn btn-secondary me-2 mb-2" disabled>{{ $hashtag->name }}</button>
                                 @endforeach
                             </p>
                             <p class="card-text">{{ Str::limit($article->content, 120) }}</p>
