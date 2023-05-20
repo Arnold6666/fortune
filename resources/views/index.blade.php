@@ -14,7 +14,7 @@ $user = Auth::user();
 
     {{-- bootstrap 5  --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
-    <title>Document</title>
+    <title>Blog</title>
 
 </head>
 
@@ -36,6 +36,9 @@ $user = Auth::user();
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" aria-current="page" href="/logout">登出</a>
+                            </li>
+                            <li class="nav-item">
+                                <p class="btn btn-outline-secondary mb-0 text-white ms-2">{{ auth()->user()->name }}</p>
                             </li>
                         @else
                             <li class="nav-item">
@@ -69,6 +72,12 @@ $user = Auth::user();
                         <div class="card-body">
                             <h5 class="card-title">{{ $article->title }} </h5>
                             <h6 class="card-title">作者：{{ $article->name }} </h6>
+                            {{-- 顯示文章標籤 --}}
+                            <p>文章標籤: <br>
+                                @foreach ($article->hashtags as $hashtag)
+                                    <button type="button" class="btn btn-secondary" disabled>{{ $hashtag->name }}</button>
+                                @endforeach
+                            </p>
                             <p class="card-text">{{ Str::limit($article->content, 120) }}</p>
                             <p class="d-flex justify-content-around mb-0 align-items-center">
                                 <a href={{"/article/" . $article->id}} class="btn btn-primary">繼續閱讀</a> 

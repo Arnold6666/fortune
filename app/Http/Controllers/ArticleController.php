@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\Article_hashtag;
 use App\Models\Comment;
+use App\Models\Hashtag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Hash;
 
 class ArticleController extends Controller
 {
@@ -16,7 +19,7 @@ class ArticleController extends Controller
     {
         //
 
-        $articles = Article::all();
+        $articles = Article::with('hashtags')->get();
 
         return view('index', compact('articles'));
     }
@@ -26,7 +29,8 @@ class ArticleController extends Controller
      */
     public function create()
     {
-        return view('create');
+        $hashtags = Hashtag::all();
+        return view('create', compact('hashtags'));
     }
 
     /**
@@ -36,6 +40,8 @@ class ArticleController extends Controller
     {
         //
         $article = new Article;
+
+        $hashtags = $request->hashtag_id;
 
         $dateTimeStr    = Carbon::now()->toDateTimeString();
 
@@ -57,6 +63,16 @@ class ArticleController extends Controller
 
             try {
                 $article->save();
+
+                $articleId = $article->id;
+
+                foreach($hashtags as $hashtag_id){
+                    $article_hashtag = new Article_hashtag;
+                    $article_hashtag->article_id = $articleId;
+                    $article_hashtag->hashtag_id = $hashtag_id;
+                    
+                    $article_hashtag->save();
+                }
 
                 session()->flash('message', '新增成功');
                 return redirect()->back();
@@ -91,7 +107,7 @@ class ArticleController extends Controller
      */
     public function show($id)
     {
-        $article = Article::where('id', $id)->first();
+        $article = Article::with('hashtags')->find($id);
         $article->views += 1;
         $article->save();
 
@@ -105,9 +121,10 @@ class ArticleController extends Controller
      */
     public function edit($id)
     {
-        $article = Article::where('id', $id)->first();
+        $article = Article::with('hashtags')->where('id', $id)->first();
+        $hashtags = Hashtag::all();
 
-        return view('edit', compact('article'));
+        return view('edit', compact('article'), compact('hashtags'));
     }
 
     /**
@@ -118,6 +135,10 @@ class ArticleController extends Controller
         //
 
         $article = Article::where('id', $request->id)->first();
+
+        $hashtags = $request->hashtag_id;
+
+        Article_hashtag::where('article_id', $request->id)->delete();
 
         $dateTimeStr    = Carbon::now()->toDateTimeString();
 
@@ -136,8 +157,18 @@ class ArticleController extends Controller
             $article->image          = $image;
             $article->updated_at     = $dateTimeStr;
 
+
+
             try {
                 $article->save();
+
+                foreach($hashtags as $hashtag_id){
+                    $article_hashtag = new Article_hashtag;
+                    $article_hashtag->article_id = $request->id;
+                    $article_hashtag->hashtag_id = $hashtag_id;
+                    
+                    $article_hashtag->save();
+                }
 
                 session()->flash('message', '修改成功');
                 return redirect()->back();

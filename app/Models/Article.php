@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Hashtag;
+
 
 class Article extends Model
 {
@@ -23,4 +25,9 @@ class Article extends Model
         'created_at',
         'updated_at',
     ];
+
+    public function hashtags()
+    {
+        return $this->belongsToMany(Hashtag::class, 'article_hashtags', 'article_id', 'hashtag_id');
+    }
 }

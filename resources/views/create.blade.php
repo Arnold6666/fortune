@@ -13,7 +13,7 @@ $user = Auth::user();
 
     {{-- bootstrap 5  --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
-    <title>Document</title>
+    <title>Blog</title>
 
 </head>
 
@@ -29,17 +29,15 @@ $user = Auth::user();
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                        @if ($user)
-                            <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="/create">新增文章</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="/logout">登出</a>
-                            </li>
-                            <li class="nav-item">
-                                <p class="btn btn-outline-secondary mb-0 text-white ms-2">{{ auth()->user()->name }}</p>
-                            </li>
-                        @endif
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="/create">新增文章</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="/logout">登出</a>
+                        </li>
+                        <li class="nav-item">
+                            <p class="btn btn-outline-secondary mb-0 text-white ms-2">{{ auth()->user()->name }}</p>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -52,7 +50,7 @@ $user = Auth::user();
                     {{ Session::get('message') }}
                 </div>
             @endif
-            <div class="col-6 m-auto mt-5 border p-4 border-info rounded">
+            <div class="col-10 m-auto mt-5 border p-4 border-info rounded">
                 <h2 class="text-center">新增文章</h2>
                 <form action="/create" method="post" enctype="multipart/form-data">
                     @csrf
@@ -63,14 +61,26 @@ $user = Auth::user();
                         <input type="hidden" name="user_id" value={{ Session::get('userId') }}>
                         <input type="hidden" name="name" value={{ Session::get('userName') }}>
                     </div>
+
                     <div class="mb-3">
                         <label for="content" class="form-label">內文</label>
                         <textarea class="form-control" style="resize: none; height: 300px" id="content" name="content"></textarea>
                     </div>
+
                     <div class="mb-3">
                         <label for="image" class="form-label">文章照片</label>
                         <input type="file" class="form-control" id="image" name="image">
                     </div>
+
+                    <p class="form-label">文章標籤</p>
+                    @foreach ($hashtags as $hashtag)
+                        <div class="btn-group mb-2 me-2" role="group" aria-label="Basic checkbox toggle button group">
+                            <input type="checkbox" class="btn-check" id="{{ 'hashtag' . $hashtag->id }}"
+                                autocomplete="off" name="hashtag_id[]" value="{{ $hashtag->id }}">
+                            <label class="btn btn-outline-primary"
+                                for="{{ 'hashtag' . $hashtag->id }}">{{ $hashtag->name }}</label>
+                        </div>
+                    @endforeach
                     <p class="text-center mb-0">
                         <button type="submit" class="btn btn-primary w-50">建立文章</button>
                     </p>

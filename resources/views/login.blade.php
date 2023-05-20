@@ -1,3 +1,8 @@
+<?php
+use Illuminate\Support\Facades\Auth;
+
+$user = Auth::user();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,7 +13,7 @@
 
     {{-- bootstrap 5  --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
-    <title>Document</title>
+    <title>Blog</title>
 
 </head>
 
@@ -25,12 +30,15 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
 
-                        @if (Session::has('userId'))
+                        @if ($user)
                             <li class="nav-item">
                                 <a class="nav-link active" aria-current="page" href="/create">新增文章</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link active" aria-current="page" href="/logout">登出</a>
+                            </li>
+                            <li class="nav-item">
+                                <p class="btn btn-outline-secondary mb-0 text-white ms-2">{{ auth()->user()->name }}</p>
                             </li>
                         @else
                             <li class="nav-item">

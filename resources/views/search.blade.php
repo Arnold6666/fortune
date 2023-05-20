@@ -14,7 +14,7 @@ $user = Auth::user();
 
     {{-- bootstrap 5  --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
-    <title>Document</title>
+    <title>Blog</title>
 
 </head>
 
@@ -36,6 +36,9 @@ $user = Auth::user();
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" aria-current="page" href="/logout">登出</a>
+                            </li>
+                            <li class="nav-item">
+                                <p class="btn btn-outline-secondary mb-0 text-white ms-2">{{ auth()->user()->name }}</p>
                             </li>
                         @else
                             <li class="nav-item">
