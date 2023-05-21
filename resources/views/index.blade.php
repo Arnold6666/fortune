@@ -47,6 +47,9 @@ $user = Auth::user();
                             <li class="nav-item">
                                 <a class="nav-link" href="/login">登入</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" aria-current="page" href="/register">註冊帳號</a>
+                            </li>
                         @endif
                     </ul>
                 </div>
