@@ -12,13 +12,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        
+
         Schema::create('articles', function (Blueprint $table) {
             $table->id();
-            $table->string('name',255);
+            $table->string('name', 255);
             $table->foreignId('user_id')->constrained('users');
-            $table->string('title',255);
+            $table->string('title', 255);
             $table->text('content');
+            $table->string('image_path', 255)->nullable();
+            $table->string('image_filename', 255)->nullable();
             $table->integer('views')->default(0);
             $table->timestamps();
         });

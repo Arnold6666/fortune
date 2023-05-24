@@ -9,7 +9,7 @@ use App\Models\Hashtag;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class ArticleController extends Controller
 {
@@ -89,9 +89,15 @@ class ArticleController extends Controller
             $article->user_id        = $request->user_id;
             $article->title          = $request->title;
             $article->content        = $request->content;
-            $article->image          = $image;
             $article->created_at     = $dateTimeStr;
             $article->updated_at     = $dateTimeStr;
+
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $imagePath = $image->store('public/articles'); 
+                $article->image_path = Storage::url($imagePath); 
+                $article->image_filename = $image->getClientOriginalName(); 
+            }
 
             $article->save();
 
