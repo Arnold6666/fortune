@@ -77,7 +77,7 @@ if ($article->user_id !== $user->id) {
                     </div>
                     <div class="mb-3">
                         <label for="image" class="form-label">文章照片</label>
-                        <img src={{ $article->image }} class="mb-2 w-100 rounded" alt="">
+                        <img src={{ asset(substr($article->image_path, 1)) }} class="mb-2 w-100 rounded" alt="">
                         <input type="file" class="form-control" id="image" name="image">
                     </div>
                     <p class="form-label">文章標籤(點選選擇)</p>

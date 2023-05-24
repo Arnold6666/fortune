@@ -74,8 +74,9 @@ $user = Auth::user();
                 <h2 class="text-center">所有文章</h2>
                 @foreach ($articles as $article)
                     <div class="card col-12 mb-3" >
-                        <img src={{ $article->image }} class="card-img-top w-100"  alt="...">
+                        <img src={{ asset(substr($article->image_path, 1)) }} class="card-img-top w-100"  alt={{$article->image_filename}}>
                         <div class="card-body">
+                            <p>{{$article->image_filename}}</p>
                             <h5 class="card-title">{{ $article->title }} </h5>
                             <h6 class="card-title">作者：{{ $article->name }} </h6>
                             {{-- 顯示文章標籤 --}}

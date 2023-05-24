@@ -59,7 +59,7 @@ $user = Auth::user();
                     </div>
                 @endif
                 <div class="card" style="col-12">
-                    <img src={{ $article->image }} class="card-img-top w-100" alt="...">
+                    <img src={{ asset(substr($article->image_path, 1)) }} class="card-img-top w-100" alt="...">
                     <div class="card-body">
                         <h5 class="card-title">{{ $article->title }}</h5>
                         <h6 class="card-title">作者：{{ $article->name }} </h6>

@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Models\Article_hashtag;
 use App\Models\Comment;
 use App\Models\Hashtag;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -77,16 +78,8 @@ class ArticleController extends Controller
                 return redirect()->back();
             }
 
-
-            $data = $request->image->get();
-            $mime_type = $request->image->getMimeType();
-            $imageData = base64_encode($data);
-            $src = "data:{$mime_type};base64,{$imageData}";
-            $image = $src;
-            // die($image);
-
-            $article->name           = $request->name;
-            $article->user_id        = $request->user_id;
+            $article->name           = Auth::user()->name;
+            $article->user_id        = Auth::id();
             $article->title          = $request->title;
             $article->content        = $request->content;
             $article->created_at     = $dateTimeStr;
@@ -94,9 +87,9 @@ class ArticleController extends Controller
 
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
-                $imagePath = $image->store('public/articles'); 
-                $article->image_path = Storage::url($imagePath); 
-                $article->image_filename = $image->getClientOriginalName(); 
+                $imagePath = $image->store('public/articles');
+                $article->image_path = Storage::url($imagePath);
+                $article->image_filename = $image->getClientOriginalName();
             }
 
             $article->save();
@@ -187,17 +180,14 @@ class ArticleController extends Controller
                 session()->flash('message', $message);
                 return redirect()->back();
             }
-            if ($request->image) {
-                // 將圖片轉為base64編碼存入資料型態為blob的欄位
-                $data = $request->image->get();
-                $mime_type = $request->image->getMimeType();
-                $imageData = base64_encode($data);
-                $src = "data:{$mime_type};base64,{$imageData}";
-                $image = $src;
-                // die($image);  
-                $article->image          = $image;
-            }
 
+            if ($request->hasFile('image')) {
+                Storage::disk('public')->delete(substr($article->image_path, 9));
+                $image = $request->file('image');
+                $imagePath = $image->store('public/articles');
+                $article->image_path = Storage::url($imagePath);
+                $article->image_filename = $image->getClientOriginalName();
+            }
 
             $article->title          = $request->title;
             $article->content        = $request->content;

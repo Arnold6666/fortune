@@ -58,8 +58,6 @@ $user = Auth::user();
                     <div class="mb-3">
                         <label for="title" class="form-label">標題</label>
                         <input type="text" class="form-control" id="title" name="title">
-                        <input type="hidden" name="user_id" value={{ Session::get('userId') }}>
-                        <input type="hidden" name="name" value={{ Session::get('userName') }}>
                     </div>
 
                     <div class="mb-3">
