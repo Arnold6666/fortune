@@ -231,9 +231,21 @@ class ArticleController extends Controller
     public function search(Request $request)
     {
         $query = $request->search;
+        $hashtag = $request->hashtag;
 
-        $articles = Article::where('title', 'like', '%' . $query . '%')->with('hashtags')->orderBy('updated_at', 'desc')->get();
+        if ($query) {
 
-        return view('search', compact('articles'));
+            $articles = Article::where('title', 'like', '%' . $query . '%')->with('hashtags')->orderBy('updated_at', 'desc')->get();
+
+            return view('search', compact('articles'));
+
+        } elseif ($hashtag) {
+
+            $articles = Article::whereHas('hashtags', function ($query) use ($hashtag) {
+                $query->where('name', $hashtag);
+            })->orderBy('updated_at', 'desc')->get();
+
+            return view('search', compact('articles'));
+        }
     }
 }

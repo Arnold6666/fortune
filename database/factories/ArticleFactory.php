@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Article;
 use App\Models\User;
 use Illuminate\Support\Carbon;
+use Illuminate\Http\File;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Article>
@@ -24,22 +26,22 @@ class ArticleFactory extends Factory
     {
 
         $randomUser = User::inRandomOrder()->first();
+
+        $imagePath = $this->faker->image(storage_path('app/public/articles'), 800, 600, null, false);
+        // die($imagePath);
+        $imageFile = new File(storage_path('app/public/articles/' . $imagePath));
+
+        $imageFilename = $imageFile->getFilename();
+        $imageStoragePath = '/storage/articles/' . $imageFilename;
+        Storage::disk('public')->put($imageStoragePath, file_get_contents(storage_path('app/public/articles/' . $imagePath)));
+
         return [
             'title'         => $this->faker->words(5, true),
             'name'          => $randomUser->name,
             'user_id'       => $randomUser->id,
             'content'       => $this->faker->paragraphs(3, true),
-            'image'         => function () {
-                $imagePath = glob(public_path('images/*'));
-                $randomImagePath = $imagePath[array_rand($imagePath)];
-                $data = file_get_contents($randomImagePath);
-                $imageInfo = getimagesize($randomImagePath);
-                $mimeType = $imageInfo['mime'];
-
-                $imageData = base64_encode($data);
-                $src = "data:{$mimeType};base64,{$imageData}";
-                return $src;
-            },
+            'image_path'    => $imageStoragePath,
+            'image_filename'=> $imageFilename,
             'views'         => $this->faker->randomNumber(),
             'created_at'    => Carbon::now()->subDays(rand(1, 30)),
             'updated_at'    => Carbon::now(),

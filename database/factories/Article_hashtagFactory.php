@@ -17,11 +17,10 @@ class Article_hashtagFactory extends Factory
      * @return array<string, mixed>
      */
 
-
     public function definition(): array
     {
         $hashtag    = Hashtag::inRandomOrder()->first();
-        $article            = Article::inRandomOrder()->first();
+        $article    = Article::inRandomOrder()->first();
 
         return [
             //

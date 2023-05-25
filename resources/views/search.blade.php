@@ -58,7 +58,7 @@ $user = Auth::user();
                 </div>
             @endif
             <div class="col-10 m-auto mt-5 border p-4 border-info rounded">
-                <form class="d-flex" role="search" action="{{ route('search') }}" >
+                <form class="d-flex" role="search" action="{{ route('search') }}">
                     @csrf
                     <input class="form-control me-2" type="search" placeholder="搜尋標題" name="search">
                     <button class="btn btn-outline-primary" style="width:100px" type="submit">搜尋文章</button>
@@ -68,22 +68,26 @@ $user = Auth::user();
                 <h2 class="text-center">相關文章</h2>
                 @foreach ($articles as $article)
                     <div class="card" style="col-12">
-                        <img src={{ $article->image }} class="card-img-top w-100"  alt="...">
+                        <img src={{ asset(substr($article->image_path, 1)) }} class="card-img-top w-100" alt="...">
                         <div class="card-body">
                             <h5 class="card-title">{{ $article->title }} </h5>
                             <h6 class="card-title">作者：{{ $article->name }} </h6>
                             <p>文章標籤: <br>
                                 @foreach ($article->hashtags as $hashtag)
-                                    <button type="button" class="btn btn-secondary" disabled>{{ $hashtag->name }}</button>
+                                    <form action="{{ route('search') }}" class="d-inline-block">
+                                        @csrf
+                                        <input type="hidden" name="hashtag" value={{ $hashtag->name }}>
+                                        <button class="btn btn-outline-success">{{ $hashtag->name }}</button>
+                                    </form>
                                 @endforeach
                             </p>
                             <p class="card-text">{{ Str::limit($article->content, 120) }}</p>
                             <p class="d-flex justify-content-around mb-0 align-items-center">
-                                <a href={{"/article/" . $article->id}} class="btn btn-primary">繼續閱讀</a> 
-                                <span>瀏覽人次：{{$article->views}}</span>
-                                <span>最新編輯時間：{{$article->updated_at}}</span>
+                                <a href={{ '/article/' . $article->id }} class="btn btn-primary">繼續閱讀</a>
+                                <span>瀏覽人次：{{ $article->views }}</span>
+                                <span>最新編輯時間：{{ $article->updated_at }}</span>
                             </p>
-                            
+
                         </div>
                     </div>
                 @endforeach

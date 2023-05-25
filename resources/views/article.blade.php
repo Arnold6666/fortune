@@ -74,14 +74,13 @@ $user = Auth::user();
                             <span>瀏覽人次：{{ $article->views }}</span>
                             <span>最新編輯時間：{{ $article->updated_at }}</span>
                         </p>
-                        @if ($user->id === $article->user_id)
+                        @if ($user && $user->id === $article->user_id)
                             <div class="d-flex justify-content-around">
                                 <a href={{ '/edit/' . $article->id }} class="btn btn-outline-success">編輯文章</a>
-                                <form id="deleteForm" action="/delete/{{ $article->id }}" method="POST">
+                                <form action="{{ route('search') }}" class="d-inline-block">
                                     @csrf
-                                    @method('DELETE')
-                                    <button type="button" class="btn btn-outline-danger"
-                                        onclick="deleteArticle()">刪除文章</button>
+                                    <input type="hidden" name="hashtag" value={{ $hashtag->name }}>
+                                    <button class="btn btn-outline-success">{{ $hashtag->name }}</button>
                                 </form>
                             </div>
                         @endif
@@ -91,7 +90,6 @@ $user = Auth::user();
             <hr>
             <div class="col-10 m-auto mt-3">
                 <h2>留言區</h2>
-
                 <form action="/comment/store" method="POST" id="comment"
                     class="d-flex justify-content-center align-items-center">
                     @csrf

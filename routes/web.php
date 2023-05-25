@@ -37,7 +37,6 @@ Route::post('/comment/store', [CommentController::class, 'store']);
 Route::patch('/comment/update', [CommentController::class, 'update']); 
 Route::delete('/comment/delete/{id}', [CommentController::class, 'destroy']); 
 
-
 // hashtag
 Route::get('/hashtag', [HashtagController::class, 'index'])->middleware('auth');
 Route::post('/hashtag/store', [HashtagController::class, 'store']); 
