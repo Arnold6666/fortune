@@ -248,4 +248,12 @@ class ArticleController extends Controller
             return view('search', compact('articles'));
         }
     }
+
+    public function myArticle(){
+        $user_id = Auth::id();
+
+        $articles = Article::where('user_id',$user_id)->with('hashtags')->get();
+
+        return view('myarticle', compact('articles'));
+    }
 }

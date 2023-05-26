@@ -27,7 +27,7 @@ class ArticleFactory extends Factory
 
         $randomUser = User::inRandomOrder()->first();
 
-        $imagePath = $this->faker->image(storage_path('app/public/articles'), 800, 600, null, false);
+        $imagePath = $this->faker->image(storage_path('app/public/articles'), 800, 300, null, false);
         // die($imagePath);
         $imageFile = new File(storage_path('app/public/articles/' . $imagePath));
 

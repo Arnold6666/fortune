@@ -64,9 +64,13 @@ $user = Auth::user();
                         <h5 class="card-title">{{ $article->title }}</h5>
                         <h6 class="card-title">作者：{{ $article->name }} </h6>
                         {{-- 顯示所有標籤 --}}
-                        <p>
+                        <p>文章標籤: <br>
                             @foreach ($article->hashtags as $hashtag)
-                                <button type="button" class="btn btn-secondary" disabled>{{ $hashtag->name }}</button>
+                                <form action="{{ route('search') }}" class="d-inline-block">
+                                    @csrf
+                                    <input type="hidden" name="hashtag" value={{ $hashtag->name }}>
+                                    <button class="btn btn-outline-success">{{ $hashtag->name }}</button>
+                                </form>
                             @endforeach
                         </p>
                         <p class="card-text">{{ $article->content }}</p>

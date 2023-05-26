@@ -30,13 +30,13 @@ $user = Auth::user();
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="/create">新增文章</a>
+                            <a class="nav-link" aria-current="page" href="/hushtag">文章標籤</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="/logout">登出</a>
                         </li>
                         <li class="nav-item">
-                            <p class="btn btn-outline-secondary mb-0 text-white ms-2">{{ auth()->user()->name }}</p>
+                            <a class="btn btn-outline-secondary mb-0 text-white ms-2" href="{{ route('myArticle')}}">{{ auth()->user()->name }} 的文章 </a>
                         </li>
                     </ul>
                 </div>

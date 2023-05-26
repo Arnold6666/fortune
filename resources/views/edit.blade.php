@@ -44,8 +44,7 @@ if ($article->user_id !== $user->id) {
                             <a class="nav-link active" aria-current="page" href="/logout">登出</a>
                         </li>
                         <li class="nav-item">
-                            <p class="btn btn-outline-secondary mb-0 text-white ms-2">{{ $user->name }}
-                            </p>
+                            <a class="btn btn-outline-secondary mb-0 text-white ms-2" href="{{ route('myArticle')}}">{{ auth()->user()->name }} 的文章 </a>
                         </li>
 
                     </ul>

@@ -35,13 +35,11 @@ $user = Auth::user();
                                 <a class="nav-link" aria-current="page" href="/create">新增文章</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" aria-current="page" href="/hushtag">文章標籤</a>
-                            </li>
-                            <li class="nav-item">
                                 <a class="nav-link" aria-current="page" href="/logout">登出</a>
                             </li>
                             <li class="nav-item">
-                                <p class="btn btn-outline-secondary mb-0 text-white ms-2">{{ auth()->user()->name }}</p>
+                                <a class="btn btn-outline-secondary mb-0 text-white ms-2"
+                                    href="{{ route('myArticle') }}">{{ auth()->user()->name }} 的文章 </a>
                             </li>
                         @else
                             <li class="nav-item">
@@ -78,7 +76,11 @@ $user = Auth::user();
                 <div class="col-8 m-0 mt-5 border p-4 border-info rounded text-around">
                     <h2 class="text-center">所有標籤</h2>
                     @foreach ($hashtags as $hashtag)
-                        <button type="button" class="btn btn-secondary m-auto mb-2">{{ $hashtag->name }}</button>
+                        <form action="{{ route('search') }}" class="d-inline-block">
+                            @csrf
+                            <input type="hidden" name="hashtag" value={{ $hashtag->name }}>
+                            <button class="btn btn-outline-secondary">{{ $hashtag->name }}</button>
+                        </form>
                     @endforeach
                 </div>
             </div>

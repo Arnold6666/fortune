@@ -28,6 +28,7 @@ Route::get('/create', [ArticleController::class, 'create'])->middleware('auth');
 Route::get('/article/{id}', [ArticleController::class, 'show']);
 Route::get('/edit/{id}', [ArticleController::class, 'edit'])->middleware('auth');
 Route::get('/search', [ArticleController::class, 'search'])->name('search');
+Route::get('/myArticle', [ArticleController::class, 'myArticle'])->name('myArticle');
 Route::post('/create', [ArticleController::class, 'store']); 
 Route::patch('/update', [ArticleController::class, 'update']); 
 Route::delete('/delete/{id}', [ArticleController::class, 'destroy']); 
